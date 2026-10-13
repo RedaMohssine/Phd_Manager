@@ -20,16 +20,19 @@ Stack: React 18, Tailwind CSS, Node.js / Express, MySQL (`mysql2`), JWT, bcrypt,
 
 ## Data model
 
-<img width="546" height="616" alt="Database schema" src="https://github.com/user-attachments/assets/027b22fe-5ab0-45fb-ac6a-a6313e59c048" />
+![Database schema](docs/images/data_model.png)
 
-The SQL script is in [database/schema.sql](database/schema.sql).
+*MySQL schema: users, PhD students, theses, documents and notifications. The SQL script is in [database/schema.sql](database/schema.sql).*
 
 ## Screenshots
 
-<img width="1821" height="875" alt="Screenshot" src="https://github.com/user-attachments/assets/3efc94ed-042d-4b1e-9a9e-eadd7cdc7d4c" />
-<img width="1133" height="548" alt="Screenshot" src="https://github.com/user-attachments/assets/24edf72b-3cf8-40f7-b38f-d6159418c3fe" />
-<img width="3839" height="1843" alt="Screenshot" src="https://github.com/user-attachments/assets/7685bcab-33d1-4d97-9498-03cab07b7b0f" />
-<img width="3839" height="1843" alt="Screenshot" src="https://github.com/user-attachments/assets/26821765-5e45-4820-b4c1-02e4747228ff" />
+![Login page](docs/images/login.png)
+
+*Login page (email and password, JWT issued by the API).*
+
+![Student notifications](docs/images/student_notifications.png)
+
+*Student view: notifications sent by the administrator.*
 
 ## Running it locally
 
