@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2'); // Importer MySQL
-require('dotenv').config(); // Charger les variables d'environnement
-const app = express();
-const PORT = 5000;
-const JWT_SECRET = '***REMOVED***';
 const multer = require('multer');
 const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') }); // Charger les variables d'environnement
+const app = express();
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -18,7 +18,6 @@ app.get('/api/status', (req, res) => {
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -112,10 +111,10 @@ app.post('/api/theses', (req, res) => {
 
 // Configuration de la connexion MySQL
 const db = mysql.createConnection({
-  host: 'localhost', // Remplacez par votre adresse (si différente)
-  user: 'root', // Votre utilisateur MySQL
-  password: '***REMOVED***', // Votre mot de passe
-  database: 'gestion_doctorants', // La base de données créée
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || 'gestion_doctorants',
 });
 
 // Vérifier la connexion
@@ -235,7 +234,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Ensure this directory exists
+        cb(null, path.join(__dirname, 'uploads'));
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -266,7 +265,7 @@ app.post('/api/documents', upload.single('document'), (req, res) => {
   const { doctorantId } = req.body;
   const doc_ID = doctorantId -1;
   const sql = 'INSERT INTO documents (doctorant_id, file_path) VALUES (?, ?)';
-  db.query(sql, [doc_ID, req.file.path], (err, result) => {
+  db.query(sql, [doc_ID, `uploads/${req.file.filename}`], (err, result) => {
       if (err) {
           console.error('Database error:', err);
           return res.status(500).json({ error: 'Error saving document' });
