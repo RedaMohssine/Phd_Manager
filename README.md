@@ -4,7 +4,7 @@ Web app to manage PhD students at a school: student profiles, theses, documents 
 
 ## Context
 
-Academic project at EMINES (UM6P), October 2024 to March 2025, built by a team of four students. The repository was initialized by a teammate ([LightnninGG](https://github.com/LightnninGG)); the application code (React frontend, Express API, MySQL schema) was then pushed from my account.
+Academic group project at EMINES (UM6P), October 2024 to March 2025. The repository was initialized by a teammate ([LightnninGG](https://github.com/LightnninGG)); the application code (React frontend, Express API, MySQL schema) was then pushed from my account.
 
 The original project report (in French) is in [docs/report_fr.pdf](docs/report_fr.pdf).
 
@@ -29,10 +29,6 @@ Stack: React 18, Tailwind CSS, Node.js / Express, MySQL (`mysql2`), JWT, bcrypt,
 ![Login page](docs/images/login.png)
 
 *Login page (email and password, JWT issued by the API).*
-
-![Student notifications](docs/images/student_notifications.png)
-
-*Student view: notifications sent by the administrator.*
 
 ## Running it locally
 
