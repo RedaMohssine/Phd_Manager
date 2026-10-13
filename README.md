@@ -1,72 +1,78 @@
-# PhD Management App
+# PhD Manager
 
-PhD Management App is a web-based application designed to streamline the management of PhD-related tasks, including document handling, notifications, and thesis tracking. This project is built using React for the frontend and Node.js for the backend.
+Web app to manage PhD students at a school: student profiles, theses, documents and notifications, with separate views for administrators and PhD students.
 
-## Features
-- **Document Management**: Upload, view, and manage documents.
-- **Notifications**: Send and receive notifications for important updates.
-- **Thesis Tracking**: Monitor the progress of PhD theses.
-- **User Roles**: Separate views and functionalities for administrators and PhD students.
+## Context
 
-## Technologies Used
-- **Frontend**: React, Tailwind CSS
-- **Backend**: Node.js, Express
-- **Database**: MySQL
-- **Authentication**: JSON Web Tokens (JWT)
-- **File Uploads**: Multer
+Academic project at EMINES (UM6P), October 2024 to March 2025, built by a team of four students. The repository was initialized by a teammate ([LightnninGG](https://github.com/LightnninGG)); the application code (React frontend, Express API, MySQL schema) was then pushed from my account.
 
-## Installation
+The original project report (in French) is in [docs/report_fr.pdf](docs/report_fr.pdf).
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm (v8 or higher)
-- MySQL database
+## What it does
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd phd-management-app
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Set up environment variables:
-   - Create a `.env` file in the `backend/` directory.
-   - Add the following variables:
-     ```env
-     DB_HOST=your-database-host
-     DB_USER=your-database-user
-     DB_PASSWORD=your-database-password
-     DB_NAME=your-database-name
-     JWT_SECRET=your-jwt-secret
-     ```
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- **Login with roles**: email and password, passwords hashed with bcrypt, JWT issued on login. Admins and PhD students see different menus.
+- **Student and thesis management** (admin): add PhD students (this also creates their user account), add theses linked to a student, list both.
+- **Documents**: students upload files (PDF, Word, images, up to 5 MB, handled with Multer); admins see and open all uploaded documents.
+- **Notifications**: admins send a message to all students or to a selection; each student sees their own notifications.
+- **Dashboard** (admin): number of students (active / suspended), theses in progress and defended.
 
-## Usage
-- Open [http://localhost:3000](http://localhost:3000) in your browser to access the application.
-- Use the admin panel to manage documents and notifications.
+Stack: React 18, Tailwind CSS, Node.js / Express, MySQL (`mysql2`), JWT, bcrypt, Multer.
 
-## Contributing
-Contributions are welcome! Please fork the repository and submit a pull request.
+## Data model
 
-#Data Structure
-<img width="546" height="616" alt="image" src="https://github.com/user-attachments/assets/027b22fe-5ab0-45fb-ac6a-a6313e59c048" />
+<img width="546" height="616" alt="Database schema" src="https://github.com/user-attachments/assets/027b22fe-5ab0-45fb-ac6a-a6313e59c048" />
 
-#ScreenShots
+The SQL script is in [database/schema.sql](database/schema.sql).
 
-<img width="1821" height="875" alt="image" src="https://github.com/user-attachments/assets/3efc94ed-042d-4b1e-9a9e-eadd7cdc7d4c" />
-<img width="1133" height="548" alt="image" src="https://github.com/user-attachments/assets/24edf72b-3cf8-40f7-b38f-d6159418c3fe" />
-<img width="3839" height="1843" alt="image" src="https://github.com/user-attachments/assets/7685bcab-33d1-4d97-9498-03cab07b7b0f" />
-<img width="3839" height="1843" alt="image" src="https://github.com/user-attachments/assets/26821765-5e45-4820-b4c1-02e4747228ff" />
+## Screenshots
 
+<img width="1821" height="875" alt="Screenshot" src="https://github.com/user-attachments/assets/3efc94ed-042d-4b1e-9a9e-eadd7cdc7d4c" />
+<img width="1133" height="548" alt="Screenshot" src="https://github.com/user-attachments/assets/24edf72b-3cf8-40f7-b38f-d6159418c3fe" />
+<img width="3839" height="1843" alt="Screenshot" src="https://github.com/user-attachments/assets/7685bcab-33d1-4d97-9498-03cab07b7b0f" />
+<img width="3839" height="1843" alt="Screenshot" src="https://github.com/user-attachments/assets/26821765-5e45-4820-b4c1-02e4747228ff" />
 
+## Running it locally
 
+Requirements: Node.js 16+, MySQL.
 
+```bash
+git clone https://github.com/RedaMohssine/Phd_Manager.git
+cd Phd_Manager
+npm install
+
+# create the database and tables
+mysql -u root -p < database/schema.sql
+
+# backend configuration
+cp backend/.env.example backend/.env   # then edit the values
+```
+
+Create a first admin account (the app has no sign-up page):
+
+```bash
+node -e "require('bcrypt').hash('your-password', 10).then(console.log)"
+mysql -u root -p gestion_doctorants -e "INSERT INTO users (email, password, role) VALUES ('admin@example.com', '<hash>', 'admin');"
+```
+
+Then start the API (port 5000) and the React app (port 3000) together:
+
+```bash
+npm run dev
+```
+
+## Repository structure
+
+```
+backend/server.js     Express API (auth, students, theses, documents, notifications, stats)
+backend/uploads/      uploaded files (not versioned)
+database/schema.sql   MySQL tables
+src/App.js            login, sidebar and role-based routing
+src/components/       one component per view (dashboard, students, theses, documents, notifications)
+docs/report_fr.pdf    project report (French)
+```
+
+## Limitations
+
+- The JWT is created at login but the API routes do not check it yet, so the backend is not protected on its own.
+- The API URL (`http://localhost:5000`) is hard-coded in the components instead of being configurable.
+- Students cannot be edited or deleted from the UI, and some IDs are adjusted by hand (`id - 1`) between `users` and `doctorants`, which should be replaced by a proper join on `user_id`.
